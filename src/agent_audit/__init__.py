@@ -1,6 +1,5 @@
 import sys
 from . import auditing
-from . import mechanisms
 from . import visualization
 
 
