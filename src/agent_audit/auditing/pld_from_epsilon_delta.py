@@ -28,7 +28,9 @@ def pld_from_epsilon_delta_curve(
 
     dx = float(value_discretization_interval)
     if not (dx > 0 and np.isfinite(dx)):
-        raise ValueError("value_discretization_interval must be a positive finite float")
+        raise ValueError(
+            "value_discretization_interval must be a positive finite float"
+        )
 
     # optional anchors (only if you don't already have endpoints)
     if add_anchors:

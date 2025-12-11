@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def scalar_diff_count(a: float, b: float) -> float:
     if isinstance(a, np.ndarray):
         a = a.item()
@@ -8,6 +9,7 @@ def scalar_diff_count(a: float, b: float) -> float:
     out = abs(a - b)
 
     return out
+
 
 def dist_l1(a: np.ndarray, b: np.ndarray) -> float:
     print(a.shape, b.shape)
