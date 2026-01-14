@@ -497,6 +497,12 @@ class Auditor:
             )
 
     def compute_overall_pld(self) -> Any:
+        if not self.log:
+            raise ValueError(
+                "Cannot compute privacy loss because no noise additions "
+                "were recorded. Make sure your noise functions are "
+                "annotated with @audit_spec."
+            )
         curr_pld = None
         for entry in self.log:
             entry_pld = (
