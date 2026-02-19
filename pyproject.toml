@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "agent_audit"
+name = "dp-recorder"
 version = "0.1.0"
-description = "agent helper library for auditing privacy mechanisms"
+description = "A grey-box auditing library for Differential Privacy mechanisms"
 authors = ["Oblivious Devs <dev@oblivious.com>"]
 readme = "README.md"
-packages = [{include = "agent_audit", from = "src"}]
+packages = [{include = "dp_recorder", from = "src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"

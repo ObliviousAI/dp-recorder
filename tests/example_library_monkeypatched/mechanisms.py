@@ -7,7 +7,7 @@ from typing import Optional
 from typing import Optional, Union
 import numpy as np
 
-from agent_audit.auditing.audit_primitives import audit_spec
+from dp_recorder.auditing.audit_primitives import audit_spec
 
 
 def apply_laplace_noise(

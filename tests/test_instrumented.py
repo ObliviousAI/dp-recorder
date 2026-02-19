@@ -1,8 +1,8 @@
 import example_library_instrumented.audited_algorithm as audited_algorithm
-from agent_audit.auditing.audit_primitives import Auditor
+from dp_recorder.auditing.audit_primitives import Auditor
 import pandas as pd
 import numpy as np
-from agent_audit.auditing.dataset_util import generate_neighbors
+from dp_recorder.auditing.dataset_util import generate_neighbors
 
 import pytest
 import os

@@ -6,7 +6,7 @@ import pandas as pd
 from typing import Optional, Tuple, Any
 from graphviz import Digraph
 
-from agent_audit.auditing.audit_primitives import Auditor
+from dp_recorder.auditing.audit_primitives import Auditor
 
 
 def _summarize_val(val: Any) -> str:

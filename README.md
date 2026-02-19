@@ -1,8 +1,8 @@
-# AGENT_audit
+# dp-recorder
 
-**AGENT_audit** is a Python library for **gray-box auditing** of Differential Privacy (DP) libraries. It implements the **Re:cord-play** framework, designed to detect implementation bugs, sensitivity miscalculations, and data-dependent control flow leaks in DP algorithms.
+**dp-recorder** is a Python library for **gray-box auditing** of Differential Privacy (DP) libraries. It implements the **Re:cord-play** framework, designed to detect implementation bugs, sensitivity miscalculations, and data-dependent control flow leaks in DP algorithms.
 
-Unlike traditional black-box auditing, `AGENT_audit` inspects the internal state of the algorithm. It can deterministically flag privacy violations in a single pair of executions or perform targeted statistical auditing on specific components.
+Unlike traditional black-box auditing, `dp-recorder` inspects the internal state of the algorithm. It can deterministically flag privacy violations in a single pair of executions or perform targeted statistical auditing on specific components.
 
 ## 🚀 Key Features
 
@@ -18,8 +18,8 @@ Unlike traditional black-box auditing, `AGENT_audit` inspects the internal state
 This project is managed with [Poetry](https://python-poetry.org/).
 
 ```bash
-git clone [https://github.com/oblivious-repos/AGENT_audit.git](https://github.com/oblivious-repos/AGENT_audit.git)
-cd AGENT_audit
+git clone https://github.com/oblivious-repos/dp-recorder.git
+cd dp-recorder
 poetry install
 ```
 
@@ -41,8 +41,8 @@ The framework operates on the insight that DP algorithms interleave **data-depen
 Use `@audit_spec` to mark functions that add noise. If you want to verify that specific variables (like hyperparameters or data shapes) do not depend on private data, use `ensure_equality`.
 
 ```python
-from agent_audit.auditing.audit_primitives import audit_spec, ensure_equality
-from agent_audit.auditing.metrics import l1_distance
+from dp_recorder.auditing.audit_primitives import audit_spec, ensure_equality
+from dp_recorder.auditing.metrics import l1_distance
 
 # A trusted primitive (we verify inputs, but trust the noise generation)
 @audit_spec(
@@ -75,8 +75,8 @@ def dp_algorithm(private_data, epsilon):
 The `Auditor` manages the "Record" and "Replay" phases.
 
 ```python
-from agent_audit.auditing.audit_primitives import Auditor
-from agent_audit.auditing.dataset_util import generate_neighbors
+from dp_recorder.auditing.audit_primitives import Auditor
+from dp_recorder.auditing.dataset_util import generate_neighbors
 import numpy as np
 
 # 1. Setup Data
@@ -116,7 +116,7 @@ auditor.compute_overall_pld()
 
 ### Project Structure
 
-* `src/agent_audit/`
+* `src/dp_recorder/`
     * `auditing/audit_primitives.py`: Core `Auditor` class and instrumentation hooks.
     * `auditing/metrics.py`: Distance metrics ($L_1, L_2, L_\infty$) for sensitivity checks.
     * `auditing/dataset_util.py`: Strategies for generating neighboring datasets (Add/Remove, Replace-one).
@@ -139,7 +139,7 @@ RUN_DISTRIBUTIONAL_AUDIT=true poetry run pytest
 
 ### Citation
 
-If you use AGENT_audit (Re:cord-play) in your research or workflows, please cite the following paper:
+If you use dp-recorder (Re:cord-play) in your research or workflows, please cite the following paper:
 
 ```bibtex
 @inproceedings{recordplay2025,

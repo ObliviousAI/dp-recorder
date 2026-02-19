@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Tuple, Dict, Optional, Union
 from .mechanisms import apply_laplace_noise, top_one
-from agent_audit.auditing.audit_primitives import ensure_equality
+from dp_recorder.auditing.audit_primitives import ensure_equality
 
 
 def preprocess_data(raw_data: List[str], candidate_map: List[str]) -> np.ndarray:

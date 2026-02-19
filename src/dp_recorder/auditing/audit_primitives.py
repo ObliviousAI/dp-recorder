@@ -18,8 +18,8 @@ except ImportError:
     # Fallback for type hinting if library is missing during static analysis
     pld = Any
 
-from agent_audit.auditing.privacy_converter import PrivacyConverter
-from agent_audit.auditing.pld_from_epsilon_delta import pld_from_epsilon_delta_curve
+from dp_recorder.auditing.privacy_converter import PrivacyConverter
+from dp_recorder.auditing.pld_from_epsilon_delta import pld_from_epsilon_delta_curve
 
 try:
     from sklearn.metrics import roc_curve
