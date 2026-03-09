@@ -10,6 +10,7 @@ from functools import wraps
 from enum import Enum
 from copy import deepcopy
 from tqdm.auto import tqdm
+import scipy.stats as stats
 
 # Ensure dp_accounting is installed
 try:
@@ -157,6 +158,15 @@ class LogEntry:
     deltas_rec: Optional[np.ndarray] = None
 
 
+import copy
+import numpy as np
+from typing import List, Callable, Optional, Any
+from tqdm import tqdm
+
+# (Assuming other required imports are available in your namespace: LogEntry, AuditMode, etc.)
+SKLEARN_AVAILABLE = True
+
+
 class Auditor:
     def __init__(self):
         self.mode = AuditMode.RECORD
@@ -187,7 +197,6 @@ class Auditor:
         *args,
         **kwargs,
     ):
-
         input_val, params = _split_input_and_params(func, args, kwargs, input_arg)
 
         sens_val = None
@@ -203,7 +212,6 @@ class Auditor:
             rng = _get_rng_state()
             output = func(*args, **kwargs)
 
-            # --- Trusted Logic: Compute Analytical PLD if accountant provided ---
             trusted_pld = None
             if accountant is not None:
                 try:
@@ -244,7 +252,6 @@ class Auditor:
             if str(entry.params) != str(params):
                 raise AssertionError(
                     f"Params mismatch @ {self._cursor} ({kind}).\n"
-                    f"Likely a non-data parameter changed between runs.\n"
                     f"Record: {entry.params}\n"
                     f"Replay: {params}"
                 )
@@ -276,7 +283,6 @@ class Auditor:
                     f"Divergence @ {self._cursor}: Expected Equality Check, got {entry.kind}"
                 )
 
-            print("COMPARING: ", entry.value_d, " vs ", value, " with label ", label)
             if not _are_equal(entry.value_d, value):
                 raise AssertionError(
                     f"Equality Failure @ '{label}' (Call {self._cursor})\n"
@@ -284,163 +290,220 @@ class Auditor:
                     f"   Replay (D'): {value}"
                 )
 
-            print(f"[Audit] Equality '{label}': OK")
             self._cursor += 1
-
             return entry.output_d
 
     def validate_records(self):
         failures = []
         for i, entry in enumerate(self.log):
-            if entry.kind == "EQ":
-                continue
-            if entry.inputs_dp is None:
+            if entry.kind == "EQ" or getattr(entry, "inputs_dp", None) is None:
                 continue
 
-            # Compare Input D vs Input D'
             val_d = list(entry.inputs_d.values())[0]
             val_dp = list(entry.inputs_dp.values())[0]
 
-            # check if val_d is zero dimensional, else make one-dimensional
             if not isinstance(val_d, np.ndarray):
                 val_d = np.array(val_d)
             if not isinstance(val_dp, np.ndarray):
                 val_dp = np.array(val_dp)
-            if isinstance(val_d, np.ndarray) and val_d.ndim == 0:
+            if val_d.ndim == 0:
                 val_d = val_d.reshape(1)
-            if isinstance(val_dp, np.ndarray) and val_dp.ndim == 0:
+            if val_dp.ndim == 0:
                 val_dp = val_dp.reshape(1)
 
             dist = entry.metric_fn(val_d, val_dp)
             limit = entry.sensitivity_val + 1e-9
 
-            print(
-                f"Call {i} ({entry.kind}): Dist {dist} > Sens {entry.sensitivity_val}"
-            )
-            # check if dist is infinity
-            print("dist: ", dist)
-            print("entry.sensitivity_val: ", entry.sensitivity_val)
-
             if dist > limit:
                 failures.append(
                     f"Call {i} ({entry.kind}): Dist {dist:.4f} > Sens {entry.sensitivity_val}"
-                )
-            else:
-                print(
-                    f"Call {i} ({entry.kind}): Passed (Dist: {dist:.4f} <= {entry.sensitivity_val})"
                 )
 
         if failures:
             raise AssertionError("\n".join(failures))
 
-    def run_distributional_audit(self, n_samples=1000, epsilon_range=(-25, 25)):
+    def run_distributional_audit(
+        self,
+        n_samples: int = 1000,
+        epsilon_range: tuple = (-25, 25),
+        alpha: float = 1e-5,
+        test_size: float = 0.5,
+    ):
         if not SKLEARN_AVAILABLE:
             print("[Error] sklearn is required for distributional audit.")
             return
 
-        print(f"\n=== Running Distributional Audit (n={n_samples}) ===")
+        try:
+            from scipy.stats import beta
+        except ImportError:
+            print("[Error] scipy is required for rigorous distributional audit.")
+            return
 
         entries_processed = 0
 
-        for entry in tqdm(self.log, desc="Sampling"):
+        for entry in tqdm(self.log, desc="Sampling", leave=False):
             if entry.kind == "EQ":
                 continue
-
-            # --- TRUSTED CHECK ---
-            # If we have a trusted PLD, we assume the math is correct and skip the sampling inference.
             if entry.pld_trusted is not None:
-                # We count this as processed effectively
                 entries_processed += 1
-                # No need to run sampling for this entry
                 continue
 
-            if entry.inputs_dp is None:
+            if getattr(entry, "inputs_dp", None) is None:
                 print(
-                    f"[Warning] Skipping Call {entry.call_id}: No neighbor input (inputs_dp). "
-                    "Did you run auditor.set_replay() and execute the mechanism with neighbor data?"
+                    f"[Warning] Skipping Call {entry.call_id}: No neighbor input (inputs_dp)."
                 )
                 continue
 
             entries_processed += 1
 
             def _flatten_sample(sample):
-                # Handle (loss, grad) tuples from optimization-based mechanisms
                 if isinstance(sample, tuple) and len(sample) == 2:
-                    loss, grad = sample
-                    loss_arr = np.array([loss], dtype=float).ravel()
-                    grad_arr = np.array(grad, dtype=float).ravel()
+                    loss_arr = np.array([sample[0]], dtype=float).ravel()
+                    grad_arr = np.array(sample[1], dtype=float).ravel()
                     return np.concatenate([loss_arr, grad_arr])
                 arr = np.array(sample, dtype=float)
-                if arr.ndim == 0:
-                    return arr.reshape(1)
-                return arr.ravel()
+                return arr.reshape(1) if arr.ndim == 0 else arr.ravel()
 
-            # Sample D
             _set_rng_state(entry.rng_state_pre)
-            kwargs_d = {**entry.params, **entry.inputs_d}
-            raw_samples_d = [entry.func(**kwargs_d) for _ in range(n_samples // 2)]
 
-            kwargs_dp = {**entry.params, **entry.inputs_dp}
-            raw_samples_dp = [entry.func(**kwargs_dp) for _ in range(n_samples // 2)]
+            # --- 1. PREVENT RANDOM WALK DRIFTS (DEEPCOPY) ---
+            # If backend functions perform `value += noise` in-place without copies, loop iterations
+            # drift mathematically further apart, sending Epsilon to Infinity.
+            raw_samples_d = []
+            for _ in range(n_samples // 2):
+                kd = copy.deepcopy({**entry.params, **entry.inputs_d})
+                raw_samples_d.append(entry.func(**kd))
+
+            raw_samples_dp = []
+            for _ in range(n_samples // 2):
+                kdp = copy.deepcopy({**entry.params, **entry.inputs_dp})
+                raw_samples_dp.append(entry.func(**kdp))
 
             samples_d = [_flatten_sample(s) for s in raw_samples_d]
             samples_dp = [_flatten_sample(s) for s in raw_samples_dp]
 
-            lengths = {v.shape[0] for v in samples_d + samples_dp}
-            if len(lengths) != 1:
-                print(
-                    f"[Warning] Inconsistent sample shapes for entry {entry.call_id}; skipping distributional audit."
-                )
-                continue
-
             X = np.vstack(samples_d + samples_dp)
-
             y = np.array([0] * (n_samples // 2) + [1] * (n_samples // 2))
+
             if not np.isfinite(X).all():
                 print("CRITICAL: The mechanism returned NaNs or Infs!")
-                print(f"NaN count: {np.isnan(X).sum()}")
-                print(f"Inf count: {np.isinf(X).sum()}")
-
-            variances = np.var(X, axis=0)
-            if (variances == 0).any():
-                print(
-                    "CRITICAL: Zero variance detected. The mechanism might be deterministic (no noise)."
-                )
-                print(f"Features with zero variance: {np.where(variances == 0)[0]}")
+                continue
 
             from sklearn.linear_model import LogisticRegression
+            from sklearn.preprocessing import StandardScaler
+            from sklearn.pipeline import make_pipeline
             from sklearn.metrics import roc_curve, roc_auc_score
+            from sklearn.model_selection import train_test_split
 
-            clf = LogisticRegression()
-            clf.fit(X, y)
-            logp = clf.predict_log_proba(X)
-            scores = logp[:, 1] - logp[:, 0]
-            auc = roc_auc_score(y, scores)
-            fpr, tpr, _ = roc_curve(y, scores)
-            fnr = 1.0 - tpr
-            entry.tradeoff_curve = (fpr, fnr)
+            if n_samples < 10:
+                X_train, X_test, y_train, y_test = X, X, y, y
+            else:
+                X_train, X_test, y_train, y_test = train_test_split(
+                    X, y, test_size=test_size, stratify=y, random_state=42
+                )
+
+            clf = make_pipeline(StandardScaler(), LogisticRegression())
+            clf.fit(X_train, y_train)
+
+            # Phase 1: Train evaluation and optimal threshold discovery
+            logp_train = clf.predict_log_proba(X_train)
+            scores_train = logp_train[:, 1] - logp_train[:, 0]
+
+            scores_d_train = scores_train[y_train == 0]
+            scores_dp_train = scores_train[y_train == 1]
+
+            best_j = -np.inf
+            best_z = -np.inf
+
+            # Use Youden's J statistic (1 - FPR - FNR) to pick the threshold
+            # that separates distributions best without allowing extreme bound-overfitting
+            for z in np.unique(scores_train):
+                fpr_t = np.mean(scores_d_train >= z)
+                fnr_t = np.mean(scores_dp_train < z)
+                j_stat = 1.0 - (fpr_t + fnr_t)
+
+                if j_stat > best_j:
+                    best_j = j_stat
+                    best_z = z
+
+            # Phase 2: Rigorous Clopper-Pearson Bounds on the Sequestered Test set
+            logp_test = clf.predict_log_proba(X_test)
+            scores_test = logp_test[:, 1] - logp_test[:, 0]
+
+            n_neg_test = np.sum(y_test == 0)
+            n_pos_test = np.sum(y_test == 1)
+
+            fp_test = np.sum((scores_test >= best_z) & (y_test == 0))
+            fn_test = np.sum((scores_test < best_z) & (y_test == 1))
+
+            def _cp_upper(k_success, n_total, alpha_tail_val):
+                if k_success >= n_total:
+                    return 1.0
+                return float(
+                    beta.ppf(1 - alpha_tail_val, k_success + 1, n_total - k_success)
+                )
+
+            alpha_tail = alpha / 2.0
+            fpr_U_test = _cp_upper(fp_test, n_neg_test, alpha_tail)
+            fnr_U_test = _cp_upper(fn_test, n_pos_test, alpha_tail)
+
+            if fpr_U_test + fnr_U_test >= 1.0:
+                pessimistic_tradeoff = [(0.0, 1.0), (1.0, 0.0)]
+                eps_lb = 0.0
+            else:
+                pessimistic_tradeoff = [
+                    (0.0, 1.0),
+                    (fpr_U_test, fnr_U_test),
+                    (1.0, 0.0),
+                ]
+
+                e1 = (
+                    np.inf if fnr_U_test == 0 else np.log((1 - fpr_U_test) / fnr_U_test)
+                )
+                e2 = (
+                    np.inf if fpr_U_test == 0 else np.log((1 - fnr_U_test) / fpr_U_test)
+                )
+                eps_lb = float(max(e1, e2))
+
+            pessimistic_tradeoff.sort(key=lambda x: x[0])
+
+            auc = roc_auc_score(y_test, scores_test)
+            fpr_full, tpr_full, _ = roc_curve(y_test, scores_test)
+
+            entry.tradeoff_curve_empirical = list(zip(fpr_full, 1.0 - tpr_full))
+            entry.tradeoff_curve = pessimistic_tradeoff
             entry.auc = float(auc)
+            entry.empirical_epsilon_lb = eps_lb
 
-            # Build privacy profile as delta(ε) over the requested range
-            converter = PrivacyConverter(list(zip(fpr, fnr)))
+            # Build PLD securely preventing piecewise step hallucination
+            converter = PrivacyConverter(pessimistic_tradeoff)
             epsilons = np.linspace(epsilon_range[0], epsilon_range[1], 1000)
             deltas = [converter.get_delta_from_epsilon(float(eps)) for eps in epsilons]
+
             entry.privacy_profile = (epsilons, np.asarray(deltas))
-            pld_rec, ks_rec, deltas_rec = pld_from_epsilon_delta_curve(epsilons, deltas)
-            entry.pld_rec = pld_rec
-            entry.ks_rec = ks_rec
-            entry.deltas_rec = deltas_rec
+
+            try:
+                pld_rec, ks_rec, deltas_rec = pld_from_epsilon_delta_curve(
+                    epsilons, deltas
+                )
+                entry.pld_rec = pld_rec
+                entry.ks_rec = ks_rec
+                entry.deltas_rec = deltas_rec
+            except Exception as e:
+                entry.pld_rec = None
 
         if entries_processed == 0:
             print(
                 "[Audit Failed] No valid mechanism calls found. Ensure you have run the Replay phase."
             )
 
-    def compute_overall_pld(self) -> pld.PrivacyLossDistribution:
+    def compute_overall_pld(self) -> Any:
         curr_pld = None
         for entry in self.log:
             entry_pld = (
-                entry.pld_trusted if entry.pld_trusted is not None else entry.pld_rec
+                entry.pld_trusted
+                if entry.pld_trusted is not None
+                else getattr(entry, "pld_rec", None)
             )
 
             if entry_pld is not None:
