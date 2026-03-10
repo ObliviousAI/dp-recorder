@@ -1,6 +1,6 @@
 import sys
-from . import auditing
-from . import visualization
+from . import auditing  # noqa: F401
+from . import visualization  # noqa: F401
 
 
 if sys.version_info[:2] >= (3, 8):

@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 import seaborn as sns
 import numpy as np
 import pandas as pd
@@ -29,7 +28,7 @@ def _summarize_val(val: Any) -> str:
         try:
             mean_val = val.float().mean().item()
             return f"Tensor {shape_str} | μ={mean_val:.3g}"
-        except:
+        except BaseException:
             return f"Tensor {shape_str}"
 
     # Handle primitives
@@ -69,13 +68,6 @@ def _extract_params_str(params: dict) -> str:
     return ", ".join(found)
 
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
-from graphviz import Digraph
-from typing import Optional, Any
-
-
 def render_flow_graph(
     rec: "Auditor",
     out_path: Optional[str] = None,
@@ -111,7 +103,8 @@ def render_flow_graph(
     )
 
     # The cursor indicates the next expected step.
-    # If the replay crashed, the cursor points to the failed step (or the one that wasn't completed).
+    # If the replay crashed, the cursor points to the failed step (or the one
+    # that wasn't completed).
     crash_point = rec._cursor
 
     for i, entry in enumerate(rec.log):
@@ -125,16 +118,13 @@ def render_flow_graph(
         is_pending = i > crash_point
 
         # Defaults for "Pending"
-        fill_color = "#f8f9fa"  # Very light grey
+        fill_color = "#f8f9fa"  # noqa: F841
         border_color = "#aaaaaa"  # Grey
-        style = "dashed"
         font_color = "#aaaaaa"
 
         if is_replayed:
-            style = "solid"
             font_color = "black"
         elif is_crash_site:
-            style = "bold"
             font_color = "black"
 
         # --- 1. Invariants (Check Equality) ---
@@ -199,12 +189,13 @@ def render_flow_graph(
                 f"<TR><TD ALIGN='LEFT'><b>D':</b> {_summarize_val(val_dp)}</TD></TR>"
             )
         elif is_crash_site:
-            # If it crashed HERE, we might or might not have input depending on where exactly it crashed.
+            # If it crashed HERE, we might or might not have input depending on where exactly it crashed.  # noqa: E501
             # Usually, if it crashed on an invariant *before* this, we wouldn't be here.
-            # If it crashed *inside* this mechanism, we assume input was provided but execution failed.
-            row_dp = "<TR><TD ALIGN='LEFT' BGCOLOR='#fff3cd'><b>D':</b> (Execution Halting)</TD></TR>"
+            # If it crashed *inside* this mechanism, we assume input was provided but
+            # execution failed.
+            row_dp = "<TR><TD ALIGN='LEFT' BGCOLOR='#fff3cd'><b>D':</b> (Execution Halting)</TD></TR>"  # noqa: E501
         else:
-            row_dp = "<TR><TD ALIGN='LEFT'><font color='#aaaaaa'><i>D': (Pending)</i></font></TD></TR>"
+            row_dp = "<TR><TD ALIGN='LEFT'><font color='#aaaaaa'><i>D': (Pending)</i></font></TD></TR>"  # noqa: E501
 
         # C. Footer (Sensitivity Check)
         footer_text = "Status: Recorded"
@@ -233,7 +224,7 @@ def render_flow_graph(
                     footer_text = (
                         f"Δ: {dist:.4f} > Sens: {limit}<br/><B>✘ VIOLATION</B>"
                     )
-            except:
+            except BaseException:
                 footer_text = "Metric Error"
 
         elif is_crash_site:
@@ -249,10 +240,10 @@ def render_flow_graph(
         # HTML Table Construction
         label_html = f"""<
         <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
-            <TR><TD BGCOLOR="#ffffff" BORDER="1" COLOR="{border_color}">{header_text}</TD></TR>
+            <TR><TD BGCOLOR="#ffffff" BORDER="1" COLOR="{border_color}">{header_text}</TD></TR>  # noqa: E501
             {row_d}
             {row_dp}
-            <TR><TD BGCOLOR="{footer_bg}" BORDER="1" COLOR="{border_color}">{footer_text}</TD></TR>
+            <TR><TD BGCOLOR="{footer_bg}" BORDER="1" COLOR="{border_color}">{footer_text}</TD></TR>  # noqa: E501
         </TABLE>>"""
 
         dot.node(node_id, label=label_html, shape="plain")
@@ -325,7 +316,7 @@ def plot_call_diffs(
 
     if not data:
         print(
-            "[Plot Warning] No valid comparison data found. Did you run auditor.set_replay()?"
+            "[Plot Warning] No valid comparison data found. Did you run auditor.set_replay()?"  # noqa: E501
         )
         return None
 
@@ -349,7 +340,6 @@ def plot_call_diffs(
     # 2. Plot the "Actual Distance" as a stem plot or points
     # We iterate to color code violations
     for idx, row in df.iterrows():
-        x = idx
         y = row["Distance"]
         color = (
             "#d62728" if row["Violation"] else "#2ca02c"

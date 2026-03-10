@@ -1,13 +1,14 @@
 import numpy as np
-from dp_recorder.auditing.audit_primitives import Auditor, audit_spec
+from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 import pytest
 
 
 # --- 1. The Buggy Implementation ---
 def buggy_multiple_queries(data, epsilon):
-    # BUG: Developer applies two mechanisms to the data, spending full `epsilon` on each,
-    # but the overall pipeline intends to only spend `epsilon` total. (Should be epsilon/2)
+    # BUG: Developer applies two mechanisms to the data, spending full
+    # `epsilon` on each, but the overall pipeline intends to only spend
+    # `epsilon` total. (Should be epsilon/2)
 
     # Query 1
     raw_sum = np.sum(data)

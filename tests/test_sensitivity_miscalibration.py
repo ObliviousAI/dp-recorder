@@ -1,5 +1,5 @@
 import numpy as np
-from dp_recorder.auditing.audit_primitives import Auditor, audit_spec
+from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 import pytest
 
@@ -9,7 +9,7 @@ def buggy_private_sum(data, epsilon):
     clip_limit = 5.0
 
     # Intended sanitization to enforce a strict sensitivity bound
-    clipped_data = np.clip(data, -clip_limit, clip_limit)
+    clipped_data = np.clip(data, -clip_limit, clip_limit)  # noqa: F841
 
     # Sensitivity is calculated assuming 'clipped_data' will be used
     declared_sensitivity = clip_limit

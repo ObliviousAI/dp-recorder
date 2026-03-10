@@ -55,7 +55,8 @@ class PrivacyConverter:
 
     def get_delta_from_epsilon(self, epsilon):
         # Define the objective function to minimize
-        objective = lambda x: np.exp(epsilon) * x + self.f(x)
+        def objective(x):
+            return np.exp(epsilon) * x + self.f(x)
 
         # Find the infimum (minimum) over the domain [0, 1]
         opt_result = minimize_scalar(objective, bounds=self.domain, method="bounded")

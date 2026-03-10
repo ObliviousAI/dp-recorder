@@ -1,5 +1,5 @@
 import numpy as np
-from dp_recorder.auditing.audit_primitives import Auditor, audit_spec, ensure_equality
+from dp_recorder.auditing.audit_primitives import Auditor, ensure_equality
 from laplace_mechanism import instrumented_laplace
 import pytest
 

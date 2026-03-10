@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, List, Union, Any
+from typing import Optional, List, Union
 import numpy as np
 
 # ----------------------------

@@ -2,9 +2,13 @@ import numpy as np
 from dp_recorder.auditing.audit_primitives import audit_spec
 
 
-# --- 1. Setup Distance Metric and Mock Mechanism ---
 def dist_l1(a: np.ndarray, b: np.ndarray) -> float:
-    return float(np.linalg.norm(a - b, ord=1))
+    dist = float(np.linalg.norm(a - b, ord=1))
+
+    if np.isnan(dist):
+        return float("inf")
+
+    return dist
 
 
 @audit_spec(
