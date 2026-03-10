@@ -10,18 +10,6 @@ Requested Badge(s):
 ## Description
 
 1. Paper: Cebere, T., Erb, D., Bellet, A., Desfontaines, D., Fitzsimons, J. (2026). Privacy in Theory, Bugs in Practice: Grey-Box Auditing of Differential Privacy Libraries. *Proceedings on Privacy Enhancing Technologies*.
-2. Artifact: The artifact is `dp-recorder`, an open-source Python framework implementing the `Re:cord-play` and `Re:cord-play-sample` paradigms for the gray-box auditing of Differential Privacy mechanisms. It provides the core instrumentation to record and replay internal states of DP algor# Artifact Appendix
-
-Paper title: **Privacy in Theory, Bugs in Practice: Grey-Box Auditing of Differential Privacy Libraries**
-
-Requested Badge(s):
-  - [x] **Available**
-  - [x] **Functional**
-  - [x] **Reproduced**
-
-## Description
-
-1. Paper: Cebere, T., Erb, D., Bellet, A., Desfontaines, D., Fitzsimons, J. (2026). Privacy in Theory, Bugs in Practice: Grey-Box Auditing of Differential Privacy Libraries. *Proceedings on Privacy Enhancing Technologies*.
 2. Artifact: The artifact is `dp-recorder`, an open-source Python framework implementing the `Re:cord-play` and `Re:cord-play-sample` paradigms for the gray-box auditing of Differential Privacy mechanisms. It provides the core instrumentation to record and replay internal states of DP algorithms. This artifact directly supports the paper by demonstrating how deterministic and statistical tests successfully flag real-world implementation bugs, sensitivity miscalculations, and data-dependent control flow leaks. 
 
 ### Security/Privacy Issues and Ethical Concerns
@@ -55,7 +43,7 @@ The artifact does not disable any security mechanisms or run inherently vulnerab
 ### Accessibility
 
 The artifact can be accessed via the persistent GitHub repository at:
-https://github.com/oblivious-repos/dp-recorder/tree/main
+https://github.com/ObliviousAI/dp-recorder
 
 
 ### Set up the environment
@@ -63,7 +51,7 @@ https://github.com/oblivious-repos/dp-recorder/tree/main
 Clone the repository and build the provided Docker image to isolate the Python/Poetry dependencies:
 
 ```bash
-git clone [https://github.com/oblivious-repos/dp-recorder.git](https://github.com/oblivious-repos/dp-recorder.git)
+git clone git@github.com:ObliviousAI/dp-recorder.git
 cd dp-recorder
 docker build -t dp-recorder:latest .
 
@@ -83,8 +71,7 @@ poetry run pytest
 
 ```
 
-**Expected output:**
-The test should pass (e.g., `1 passed in 0.05s`), confirming that the `instrumented_laplace` mechanism operates correctly and is properly hooked by the `@audit_spec` decorator.
+**Expected output:** The tests should pass.
 
 ## Artifact Evaluation
 
