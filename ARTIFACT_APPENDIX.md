@@ -252,8 +252,6 @@ Our paper claims that `Re:cord-play-sample` can identify improper budget composi
 
 ### Experiments
 
-*(Note: Run all experiments inside the Docker container initialized in the "Testing the Environment" step. The commands below assume your test files are located in a `tests/` directory).*
-
 #### Experiment 1: Control Flow Leak / Domain Inference Detection
 
 * **Time:** 1 human-minute + < 1 compute-minute.
