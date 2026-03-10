@@ -1,0 +1,30 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # Update this to match your project
+
+      - name: Install Poetry
+        # pipx is pre-installed on GitHub Actions runners and is the recommended way to install Poetry
+        run: pipx install poetry
+
+      - name: Install dependencies
+        # This installs your project and its dependencies (including test dependencies)
+        run: poetry install
+
+      - name: Run tests
+        run: poetry run pytest
