@@ -1,0 +1,12 @@
+{
+  "library_id": "dpmm",
+  "submission_zip": "submissions/pets_submission.zip",
+  "workdir": ".",
+  "pytest_target": "examples/dpmm_auditing/tests",
+  "pytest_args": [],
+  "env": {
+    "PYTHONPATH": "/workspace/dp-recorder/src:{submission}/src:{submission}/examples/dpmm_auditing/dpmm/src",
+    "RUN_DISTRIBUTIONAL_AUDIT": "0"
+  },
+  "pre_cmd": []
+}

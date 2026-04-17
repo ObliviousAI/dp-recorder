@@ -1,0 +1,12 @@
+{
+  "library_id": "mbi",
+  "submission_zip": "submissions/pets_submission.zip",
+  "workdir": ".",
+  "pytest_target": "examples/mbi_auditing/tests",
+  "pytest_args": ["-s"],
+  "env": {
+    "PYTHONPATH": "/workspace/dp-recorder/src:{submission}/src:{submission}/examples/mbi_auditing/mbi/src:{submission}/examples/mbi_auditing/mbi/mechanisms",
+    "RUN_DISTRIBUTIONAL_AUDIT": "0"
+  },
+  "pre_cmd": []
+}
