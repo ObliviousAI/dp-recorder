@@ -293,14 +293,21 @@ class Auditor:
             val_d = list(entry.inputs_d.values())[0]
             val_dp = list(entry.inputs_dp.values())[0]
 
-            if not isinstance(val_d, np.ndarray):
-                val_d = np.array(val_d)
-            if not isinstance(val_dp, np.ndarray):
-                val_dp = np.array(val_dp)
-            if val_d.ndim == 0:
-                val_d = val_d.reshape(1)
-            if val_dp.ndim == 0:
-                val_dp = val_dp.reshape(1)
+            # Only convert to numpy arrays if it's not a dictionary
+            # Standard metrics  will handle conversion
+            # internally if needed, but metrics for non-scalar types
+            # (like JAM's dict scores) need the raw dict.
+            if not isinstance(val_d, dict):
+                if not isinstance(val_d, np.ndarray):
+                    val_d = np.array(val_d)
+                if val_d.ndim == 0:
+                    val_d = val_d.reshape(1)
+
+            if not isinstance(val_dp, dict):
+                if not isinstance(val_dp, np.ndarray):
+                    val_dp = np.array(val_dp)
+                if val_dp.ndim == 0:
+                    val_dp = val_dp.reshape(1)
 
             dist = entry.metric_fn(val_d, val_dp)
             limit = entry.sensitivity_val + 1e-9

@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import Optional, List, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 import numpy as np
+import pandas as pd
 
 # ----------------------------
 # Utilities
@@ -25,6 +26,77 @@ def _get_domain_shape(domain: Optional[List[int]], col_idx: int) -> int:
     if domain is not None and 0 <= col_idx < len(domain):
         return domain[col_idx]
     return 0
+
+
+class PandasDataset:
+    """Minimal DataFrame-backed dataset wrapper used by audit tests."""
+
+    class _Domain:
+        def __init__(self, attrs: Iterable[str], shape: Iterable[int]):
+            self.attrs = tuple(attrs)
+            self.shape = tuple(int(x) for x in shape)
+            self._map = dict(zip(self.attrs, self.shape))
+
+        def size(self, attrs: Optional[Iterable[str]] = None) -> int:
+            if attrs is None:
+                out = 1
+                for value in self.shape:
+                    out *= int(value)
+                return out
+            if isinstance(attrs, str):
+                return int(self._map[attrs])
+            out = 1
+            for attr in attrs:
+                out *= int(self._map[attr])
+            return out
+
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        domain_attrs: Iterable[str],
+        domain_shape: Iterable[int],
+    ):
+        attrs = list(domain_attrs)
+        self._df = df.loc[:, attrs].copy()
+        self.domain = PandasDataset._Domain(attrs, domain_shape)
+
+    @property
+    def records(self) -> int:
+        return int(len(self._df))
+
+    def to_dataframe(
+        self,
+        columns: Optional[Iterable[str]] = None,
+        limit: Optional[int] = None,
+        **_kwargs,
+    ) -> pd.DataFrame:
+        cols = list(columns) if columns is not None else list(self.domain.attrs)
+        out = self._df.loc[:, cols]
+        if limit is not None:
+            out = out.head(int(limit))
+        return out.copy()
+
+    def supported_values(self, attr: str) -> List[Any]:
+        if attr not in self._df.columns:
+            return []
+        return self._df[attr].dropna().unique().tolist()
+
+    def size(self, attrs: Optional[Iterable[str]] = None) -> int:
+        return self.domain.size(attrs)
+
+    @staticmethod
+    def create_domain_from_dataframe(df: pd.DataFrame) -> Dict[str, int]:
+        return {column: int(df[column].nunique()) for column in df.columns}
+
+    @classmethod
+    def from_dataframe(
+        cls, df: pd.DataFrame, *, domain_dict: Optional[Dict[str, int]] = None
+    ) -> "PandasDataset":
+        if domain_dict is None:
+            domain_dict = cls.create_domain_from_dataframe(df)
+        attrs = list(domain_dict.keys())
+        shape = [int(domain_dict[attr]) for attr in attrs]
+        return cls(df, attrs, shape)
 
 
 # ----------------------------
@@ -265,32 +337,48 @@ def neighbor_replace(
 
 
 def generate_neighbors(
-    data: np.ndarray,
+    data: Union[np.ndarray, PandasDataset],
     k: int,
     mode: str = "unbounded",
     domain: Optional[List[int]] = None,
     rng: Optional[Union[int, np.random.Generator]] = None,
     **kwargs,
-) -> List[np.ndarray]:
+) -> List[Union[np.ndarray, PandasDataset]]:
     """
     Produce a list of k neighboring numpy arrays.
     """
-    data = np.atleast_2d(data)
+    is_pandas_dataset = isinstance(data, PandasDataset)
+    if is_pandas_dataset:
+        base_df = data.to_dataframe(columns=data.domain.attrs)
+        base_array = base_df.to_numpy()
+        domain = list(data.domain.shape)
+    else:
+        base_array = np.atleast_2d(data)
     rng = _ensure_rng(rng)
+    neighbors: List[Union[np.ndarray, PandasDataset]] = []
 
-    for _ in range(k):
+    for _ in range(int(k)):
         if mode == "unbounded:add":
-            ds = neighbor_add(data, domain=domain, rng=rng, **kwargs)
+            ds = neighbor_add(base_array, domain=domain, rng=rng, **kwargs)
         elif mode == "unbounded:remove":
-            ds = neighbor_remove(data, rng=rng, **kwargs)
+            ds = neighbor_remove(base_array, rng=rng, **kwargs)
         elif mode == "bounded:replace":
-            ds = neighbor_replace(data, domain=domain, rng=rng, **kwargs)
+            ds = neighbor_replace(base_array, domain=domain, rng=rng, **kwargs)
         elif mode == "unbounded":
-            if data.shape[0] == 0 or rng.random() < 0.5:
-                ds = neighbor_add(data, domain=domain, rng=rng, **kwargs)
+            if base_array.shape[0] == 0 or rng.random() < 0.5:
+                ds = neighbor_add(base_array, domain=domain, rng=rng, **kwargs)
             else:
-                ds = neighbor_remove(data, rng=rng, **kwargs)
+                ds = neighbor_remove(base_array, rng=rng, **kwargs)
         else:
             raise ValueError(f"Unknown mode '{mode}'")
 
-    return ds
+        if is_pandas_dataset:
+            ds_df = pd.DataFrame(ds, columns=list(data.domain.attrs))
+            domain_dict = dict(zip(data.domain.attrs, data.domain.shape))
+            neighbors.append(
+                PandasDataset.from_dataframe(ds_df, domain_dict=domain_dict)
+            )
+        else:
+            neighbors.append(ds)
+
+    return neighbors
