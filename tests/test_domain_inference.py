@@ -1,8 +1,18 @@
+"""
+Minimal example of domain inference from private data.
+
+Maps to: the Diffprivlib and dpmm issues discussed in
+https://arxiv.org/abs/2602.17454
+Why this example: the inferred set of classes depends on private data and
+changes control flow.
+Note: this is a reduced analogue, not a line-by-line reproduction of the
+library code.
+"""
+
 import numpy as np
 import pytest
 from dp_recorder.auditing.audit_primitives import Auditor, ensure_equality
 from laplace_mechanism import instrumented_laplace
-
 
 # --- 2. Invariant Violation via Domain Inference (Diffprivlib / dpmm Bug) ---
 def buggy_domain_inference(data, epsilon):
@@ -43,6 +53,11 @@ def test_domain_inference_bug():
     # During Replay on D', the length of 'classes' diverges from 3 to 2.
     # The ensure_equality hook catches this data-dependent control flow
     # leakage immediately.
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc_info:
         with auditor:
             buggy_domain_inference(neighbor, epsilon=1.0)
+
+    message = str(exc_info.value)
+    assert "Equality Failure" in message
+    assert "num_classes" in message
+    print(f"Caught expected AssertionError:\n{message}", flush=True)

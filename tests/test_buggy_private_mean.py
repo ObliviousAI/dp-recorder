@@ -1,3 +1,14 @@
+"""
+Minimal example of non-private access to private data.
+
+Maps to: the first Synthcity issue discussed in
+https://arxiv.org/abs/2602.17454
+Why this example: the dataset size is used as if it were public, which leaks
+private information.
+Note: this is a reduced analogue, not a line-by-line reproduction of the
+library code.
+"""
+
 import numpy as np
 from dp_recorder.auditing.audit_primitives import Auditor, ensure_equality
 from laplace_mechanism import instrumented_laplace
@@ -45,8 +56,11 @@ def test_invariant_violation():
     # The `ensure_equality` hook intercepts the `n` variable.
     # Because 3 != 2, it immediately flags an Invariance Violation,
     # pinpointing the exact line where the dataset size leaked.
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc_info:
         with auditor:
             buggy_private_mean(neighbor, epsilon=1.0)
 
-        auditor.validate_records()
+    message = str(exc_info.value)
+    assert "Equality Failure" in message
+    assert "'n'" in message
+    print(f"Caught expected AssertionError:\n{message}", flush=True)

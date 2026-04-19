@@ -1,8 +1,17 @@
+"""
+Minimal example of sensitivity miscalibration.
+
+Maps to: the SmartNoise, dpmm, and first Diffprivlib issues discussed in
+https://arxiv.org/abs/2602.17454
+Why this example: the declared sensitivity assumes sanitized data, but the
+computation accidentally uses raw data.
+Note: multiple real-world bugs map to this single reduced analogue.
+"""
+
 import numpy as np
 from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 import pytest
-
 
 # --- 2. The Buggy Implementation ---
 def buggy_private_sum(data, epsilon):
@@ -48,6 +57,9 @@ def test_sensitivity_bug():
     # Compares 97.0 against the declared_sensitivity of 5.0.
     # Because 97.0 > 5.0, this will raise a Sensitivity Miscalibration exception!
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc_info:
         auditor.validate_records()
-        auditor.run_distributional_audit(n_samples=10000, alpha=0.95)
+
+    message = str(exc_info.value)
+    assert "Sens" in message
+    print(f"Caught expected AssertionError:\n{message}", flush=True)

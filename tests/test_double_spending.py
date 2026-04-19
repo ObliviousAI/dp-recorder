@@ -1,8 +1,17 @@
+"""
+Minimal example of privacy-budget double spending.
+
+Maps to: a canonical privacy-accounting bug pattern used in the artifact.
+Why this example: two queries each spend the full epsilon even though the
+pipeline intends epsilon total.
+Note: this is a reduced analogue rather than a reproduction of a specific
+library bug from the paper.
+"""
+
 import numpy as np
 from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 import pytest
-
 
 # --- 1. The Buggy Implementation ---
 def buggy_multiple_queries(data, epsilon):
@@ -56,5 +65,9 @@ def test_accounting_bug():
 
     # The auditor will calculate that the empirical loss is nearly 2.0.
     # This assertion will FAIL, alerting the developer to the bad accounting!
-    with pytest.raises(AssertionError, match="Privacy budget exceeded!"):
+    with pytest.raises(AssertionError) as exc_info:
         assert got_epsilon <= eps_target, "Privacy budget exceeded!"
+
+    message = str(exc_info.value)
+    assert "Privacy budget exceeded!" in message
+    print(f"Caught expected AssertionError:\n{message}", flush=True)
