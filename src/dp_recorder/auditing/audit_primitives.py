@@ -174,6 +174,12 @@ class Auditor:
         _active_auditor.reset(self._token)
 
     def set_replay(self):
+        if not self.log:
+            raise ValueError(
+                "Cannot enter replay mode because no noise additions "
+                "were recorded. Make sure your noise functions are "
+                "annotated with @audit_spec."
+            )
         self.mode = AuditMode.REPLAY
         self._cursor = 0
 
