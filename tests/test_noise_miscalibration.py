@@ -14,6 +14,7 @@ import pytest
 from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 
+
 # --- 1. Noise Miscalibration ---
 def buggy_privbayes_noise(data, n_features, K, epsilon):
     # BUG: Emulates the Synthcity PrivBayes bug (Section 4.3.3).

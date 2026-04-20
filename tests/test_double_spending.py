@@ -13,6 +13,7 @@ from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 import pytest
 
+
 # --- 1. The Buggy Implementation ---
 def buggy_multiple_queries(data, epsilon):
     # BUG: Developer applies two mechanisms to the data, spending full

@@ -13,6 +13,7 @@ import pytest
 from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 
+
 # --- 3. Pathological Inputs (NaN Injection) ---
 def buggy_nan_clipping(data, epsilon):
     # BUG: Naive clipping fails on NaN (Section 4.3.9).

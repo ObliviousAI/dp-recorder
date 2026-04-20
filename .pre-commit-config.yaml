@@ -8,3 +8,4 @@ repos:
     rev: 7.0.0   # Use the latest Flake8 version
     hooks:
       - id: flake8
+        args: ['--extend-ignore=F841']

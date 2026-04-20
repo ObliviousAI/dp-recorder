@@ -13,6 +13,7 @@ from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 import pytest
 
+
 # --- 2. The Buggy Implementation ---
 def buggy_private_sum(data, epsilon):
     clip_limit = 5.0

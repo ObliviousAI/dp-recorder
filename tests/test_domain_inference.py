@@ -14,6 +14,7 @@ import pytest
 from dp_recorder.auditing.audit_primitives import Auditor, ensure_equality
 from laplace_mechanism import instrumented_laplace
 
+
 # --- 2. Invariant Violation via Domain Inference (Diffprivlib / dpmm Bug) ---
 def buggy_domain_inference(data, epsilon):
     # BUG: Emulates Diffprivlib and dpmm inferring classes directly from private data.

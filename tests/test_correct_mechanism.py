@@ -11,6 +11,7 @@ import numpy as np
 from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 
+
 # --- 1. A Correct DP Count Mechanism ---
 def dp_count_mechanism(data, epsilon):
     # For binary data, adding or removing one record changes the count of 1s by at
