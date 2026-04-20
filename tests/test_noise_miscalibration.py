@@ -1,10 +1,21 @@
+"""
+Minimal example of noise miscalibration.
+
+Maps to: the Synthcity PrivBayes issue discussed in
+https://arxiv.org/abs/2602.17454
+Why this example: the declared sensitivity, and therefore the noise scale,
+collapses to zero when K == n_features.
+Note: this is a reduced analogue, not a line-by-line reproduction of the
+library code.
+"""
+
 import numpy as np
 import pytest
 from dp_recorder.auditing.audit_primitives import Auditor
 from laplace_mechanism import instrumented_laplace
 
 
-# --- 1. Noise Miscalibration (Synthcity PrivBayes Bug) ---
+# --- 1. Noise Miscalibration ---
 def buggy_privbayes_noise(data, n_features, K, epsilon):
     # BUG: Emulates the Synthcity PrivBayes bug (Section 4.3.3).
     # If K equals n_features, the sensitivity/scale evaluates to zero,
@@ -38,5 +49,9 @@ def test_noise_miscalibration_bug():
     # The empirical distance between sum(data)=2.0 and sum(neighbor)=1.0 is 1.0.
     # The declared sensitivity passed to the mechanism is 0.0.
     # Since 1.0 > 0.0, the auditor immediately catches the miscalibration.
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc_info:
         auditor.validate_records()
+
+    message = str(exc_info.value)
+    assert "Sens" in message
+    print(f"Caught expected AssertionError:\n{message}", flush=True)

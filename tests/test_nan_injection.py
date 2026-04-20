@@ -1,3 +1,13 @@
+"""
+Minimal example of a pathological-input bug via NaN injection.
+
+Maps to: the SmartNoise Synth, dpmm, Synthcity, Opacus, and Diffprivlib issues
+discussed in https://arxiv.org/abs/2602.17454
+Why this example: NaNs survive preprocessing and break the intended sensitivity
+guarantee.
+Note: multiple real-world bugs map to this single reduced analogue.
+"""
+
 import numpy as np
 import pytest
 from dp_recorder.auditing.audit_primitives import Auditor
@@ -34,5 +44,9 @@ def test_nan_injection_bug():
     # Distance calculation results in NaN. The auditor's validation
     # (distance <= sensitivity) fails to evaluate to True (NaN <= 5.0 is False),
     # throwing an error.
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc_info:
         auditor.validate_records()
+
+    message = str(exc_info.value)
+    assert "Sens" in message
+    print(f"Caught expected AssertionError:\n{message}", flush=True)

@@ -208,6 +208,7 @@ def _run_manifest_with_root(
         "pytest",
         pytest_target,
         f"--junitxml={junit_xml}",
+        "--capture=tee-sys",
         "--tb=short",
         "-v",
         "-W",
