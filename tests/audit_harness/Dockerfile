@@ -9,7 +9,7 @@ RUN apt-get update \
 
 RUN pip install --no-cache-dir \
     pytest \
-    numpy \
+    "numpy<2" \
     pandas \
     scipy \
     scikit-learn \
