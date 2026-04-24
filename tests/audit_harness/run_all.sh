@@ -10,6 +10,15 @@ RESULTS_DIR="${SCRIPT_DIR}/results"
 
 FILTER="${1:-*.json}"
 
+if ! python3 -c "import rich" >/dev/null 2>&1; then
+  echo "Error: the 'rich' Python package is required on the host to run this harness." >&2
+  echo "Install the dp-recorder project first (from the repo root), e.g.:" >&2
+  echo "  poetry install" >&2
+  echo "or:" >&2
+  echo "  pip install ." >&2
+  exit 1
+fi
+
 if [ -d "${RESULTS_DIR}" ]; then
   rm -rf "${RESULTS_DIR}" || \
     docker run --rm -v "${WORKSPACE_ROOT}:/workspace" "${IMAGE_NAME}" rm -rf "dp-recorder/tests/audit_harness/results"
