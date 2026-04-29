@@ -141,6 +141,7 @@ RUN_DISTRIBUTIONAL_AUDIT=true poetry run pytest
 To reproduce the packaged real-world library audits:
 
 ```bash
+python3 -m pip install rich  # optional, enables live progress output
 bash tests/audit_harness/run_all.sh
 ```
 

@@ -26,8 +26,12 @@ remain invariant across record/replay executions.
 From the `dp-recorder` repository root:
 
 ```bash
+python3 -m pip install rich  # optional, enables live progress output
 bash tests/audit_harness/run_all.sh
 ```
+
+If `rich` is not installed in the host Python environment, the harness falls
+back to plain text monitoring.
 
 This does:
 

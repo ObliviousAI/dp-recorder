@@ -204,8 +204,11 @@ def apply_gaussian_noise(
 To make evaluation reproducible, `tests/audit_harness/run_all.sh` builds a dedicated Docker image, unzips the submission, provisions isolated `PYTHONPATH` settings for each library, runs all manifests in parallel, and prints a summary report. From the repository root, run:
 
 ```bash
+python3 -m pip install rich  # optional, enables live progress output
 bash tests/audit_harness/run_all.sh
 ```
+
+If `rich` is not installed in the host Python environment, the harness falls back to plain text monitoring.
 
 Depending on hardware, Docker cache state, and network speed, the full suite takes roughly 15-45 minutes to build and execute. The current harness reports the discovered audit violations as pytest failures, so the command may exit non-zero even when the audit successfully catches the intended bugs. The summary report is the success criterion.
 
