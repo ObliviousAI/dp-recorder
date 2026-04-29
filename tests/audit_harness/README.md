@@ -1,21 +1,64 @@
-# dp-recorder Harness (Container + Manifest)
+# dp-recorder Real-World Audit Harness
 
-Containerized entrypoint for running audit tests against zipped submissions
-using `dp_recorder` as the auditing backend.
+Containerized entrypoint for running the packaged real-world audit examples
+against instrumented library snapshots using `dp_recorder` as the auditing
+backend.
+
+The bundled submission is:
+
+```text
+tests/audit_harness/submissions/pets_submission.zip
+```
+
+It contains three examples based on libraries where we found bugs:
+
+- `examples/dpmm_auditing/`
+- `examples/mbi_auditing/`
+- `examples/synthcity_auditing/`
+
+Each example contains the instrumented library code and a neighboring `tests/`
+directory with the audit implementation. The instrumentation wraps privacy
+primitives with `@audit_spec` and uses equality checks for values that must
+remain invariant across record/replay executions.
 
 ## Quick start
 
-From the workspace root (`oblv_repos`):
+From the `dp-recorder` repository root:
 
 ```bash
-bash dp-recorder/tests/audit_harness/run_all.sh
+bash tests/audit_harness/run_all.sh
 ```
 
 This does:
+
 1. Build `dp-recorder/tests/audit_harness/Dockerfile` (optimized layers)
 2. Extract `dp-recorder/tests/audit_harness/submissions/pets_submission.zip` once to a temp directory
 3. Run all manifests in **parallel** as background Docker containers
 4. Collect results and print a summary report
+
+Depending on local hardware, Docker cache state, and network speed, the full
+suite usually takes 15-45 minutes. The current harness reports detected audit
+violations as pytest failures, so a non-zero exit status is expected when the
+known bugs are caught.
+
+Expected summary:
+
+```text
+Manifest                        Library         Pass  XFail  XPass  Fail   Err  Status
+--------------------------------------------------------------------------------------------------------------
+  dpmm.json                         dpmm               7      0      0    11     0  FAIL
+  mbi.json                          mbi               32      0      0     8     0  FAIL
+  synthcity.json                    synthcity         10      0      0     5     0  FAIL
+--------------------------------------------------------------------------------------------------------------
+  TOTAL                                               49      0      0    24     0
+```
+
+The 24 failures are the expected successful interventions by the audit harness.
+Full pytest logs are written to:
+
+```text
+tests/audit_harness/results/<library>.log
+```
 
 ## Submission zip
 
