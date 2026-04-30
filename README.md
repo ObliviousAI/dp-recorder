@@ -122,6 +122,7 @@ auditor.compute_overall_pld()
     * `auditing/dataset_util.py`: Strategies for generating neighboring datasets (Add/Remove, Replace-one).
     * `auditing/pld_*`: Integration with `dp-accounting` for hybrid composition.
 * `tests/`: Integration tests reproducing real-world bugs found in libraries like Opacus, SmartNoise, and Diffprivlib.
+* `tests/audit_harness/`: Docker-based harness for running the packaged `dpmm`, `mbi`, and `synthcity` real-world audit examples from `submissions/pets_submission.zip`.
 
 ### Development
 
@@ -136,6 +137,15 @@ To run the slower, statistical test suite:
 ```bash
 RUN_DISTRIBUTIONAL_AUDIT=true poetry run pytest
 ```
+
+To reproduce the packaged real-world library audits:
+
+```bash
+python3 -m pip install rich  # optional, enables live progress output
+bash tests/audit_harness/run_all.sh
+```
+
+This builds the harness Docker image, runs the three library manifests in parallel, and writes logs to `tests/audit_harness/results/`. The known bug detections are currently reported as pytest failures, so a non-zero exit status is expected for this harness.
 
 ### Citation
 
