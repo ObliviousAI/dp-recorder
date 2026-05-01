@@ -266,6 +266,8 @@ Failed tests (20):
   20. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_shifted_outliers(s=4)]
      AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
 ```
+Note: For the audit_harness examples, there could be some stochasticity involved. Due to the inherent randomness in differential privacy mechanisms and the statistical sampling utilized in the auditing framework, the exact number of failing tests (e.g., whether 20 or 24 tests fail) or the specific edge-cases that trigger failures may vary slightly between distinct runs. We are working towards fixing this, until a fix, expect to see a random number of failures, particularly for the synthcity library.
+
 
 ## Limitations
 
