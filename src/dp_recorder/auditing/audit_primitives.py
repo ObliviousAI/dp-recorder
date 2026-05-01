@@ -124,6 +124,7 @@ class LogEntry:
     # -- For Mechanisms --
     func: Optional[Callable] = None
     rng_state_pre: Optional[Dict[str, Any]] = None
+    rng_state_post: Optional[Dict[str, Any]] = None
 
     inputs_d: Optional[Dict[str, Any]] = None
     inputs_dp: Optional[Dict[str, Any]] = None
@@ -206,8 +207,9 @@ class Auditor:
                     break
 
         if self.mode == AuditMode.RECORD:
-            rng = _get_rng_state()
+            rng_pre = _get_rng_state()
             output = func(*args, **kwargs)
+            rng_post = _get_rng_state()
 
             trusted_pld = None
             if accountant is not None:
@@ -223,7 +225,8 @@ class Auditor:
                     call_id=len(self.log),
                     kind=kind,
                     func=func,
-                    rng_state_pre=rng,
+                    rng_state_pre=rng_pre,
+                    rng_state_post=rng_post,
                     inputs_d={input_arg: _snapshot(input_val)},
                     params=_snapshot(params),
                     output_d=_snapshot(output),
@@ -253,7 +256,7 @@ class Auditor:
                     f"Replay: {params}"
                 )
 
-            _set_rng_state(entry.rng_state_pre)
+            _set_rng_state(entry.rng_state_post)
             self._cursor += 1
             return entry.output_d
 

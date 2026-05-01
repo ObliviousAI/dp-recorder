@@ -215,46 +215,56 @@ Depending on hardware, Docker cache state, and network speed, the full suite tak
 **Expected output:** The harness prints a manifest-level summary. The 24 `Fail` entries below are expected: they represent successful interventions by the audit harness, catching edge cases, sensitivity violations, and structural mismatches in the target libraries.
 
 ```text
-Manifest                        Library         Pass  XFail  XPass  Fail   Err  Status
---------------------------------------------------------------------------------------------------------------
-  dpmm.json                         dpmm               7      0      0    11     0  FAIL
-  mbi.json                          mbi               32      0      0     8     0  FAIL
-  synthcity.json                    synthcity         10      0      0     5     0  FAIL
---------------------------------------------------------------------------------------------------------------
-  TOTAL                                               49      0      0    24     0
+Manifest                            Library         Pass  XFail  XPass  Fail   Err  Status
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  dpmm.json                         dpmm              11      0      0     7     0  FAIL
+  mbi.json                          mbi               33      0      0     7     0  FAIL
+  synthcity.json                    synthcity          9      0      0     6     0  FAIL
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  TOTAL                                               53      0      0    20     0
 
-Failed tests (24):
+Failed tests (20):
 
-  1. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:add:copy_random(s=0)]
-  2. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:remove:randidx(s=1)]
-  3. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:add:insert_nan(s=2)]
-  4. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:add:insert_inf(s=5)]
-  5. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:add:insert_large_outliers(s=3)]
-  6. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:add:insert_shifted_outliers(s=4)]
-  7. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:copy_random(s=0)]
-  8. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:insert_nan(s=2)]
-  9. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:insert_inf(s=5)]
-  10. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:insert_large_outliers(s=3)]
-  11. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:insert_shifted_outliers(s=4)]
-  12. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[3-5.0-bounded:replace-fake]
-  13. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[3-5.0-bounded:replace-adult]
-  14. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[3-10.0-bounded:replace-fake]
-  15. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[3-10.0-bounded:replace-adult]
-  16. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[5-5.0-bounded:replace-fake]
-  17. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[5-5.0-bounded:replace-adult]
-  18. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[5-10.0-bounded:replace-fake]
-  19. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[5-10.0-bounded:replace-adult]
-  20. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:uniform_domain(s=2)]
-  21. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_nan(s=3)]
-  22. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_inf(s=5)]
-  23. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_large_outliers(s=3)]
-  24. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_shifted_outliers(s=4)]
-```
-
-Full pytest logs are generated automatically and can be reviewed in:
-
-```text
-tests/audit_harness/results/<library>.log
+  1. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:add:insert_nan(s=2)]
+     pandas.errors.IntCastingNaNError: Cannot convert non-finite values (NA or inf) to integer
+  2. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:add:insert_inf(s=5)]
+     pandas.errors.IntCastingNaNError: Cannot convert non-finite values (NA or inf) to integer
+  3. [dpmm] examples.dpmm_auditing.tests.test_aim_audit::test_dpmm_aim_record_replay_hooks[4-unbounded:add:insert_shifted_outliers(s=4)]
+     AssertionError: Equality Failure @ '_domain' (Call 0)
+  4. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:insert_nan(s=2)]
+     pandas.errors.IntCastingNaNError: Cannot convert non-finite values (NA or inf) to integer
+  5. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:insert_inf(s=5)]
+     pandas.errors.IntCastingNaNError: Cannot convert non-finite values (NA or inf) to integer
+  6. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:insert_large_outliers(s=3)]
+     AssertionError: shapes of Q and y are not compatible
+  7. [dpmm] examples.dpmm_auditing.tests.test_priv_bayes_audit::test_dpmm_priv_bayes_record_replay_hooks[unbounded:add:insert_shifted_outliers(s=4)]
+     AssertionError: Equality Failure @ '_domain' (Call 0)
+  8. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[3-5.0-bounded:replace-fake]
+     AssertionError: Call 2 (EM): Dist 4.0000 > Sens 2.0
+  9. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[3-10.0-bounded:replace-fake]
+     AssertionError: Call 1 (GM): Dist 1.4142 > Sens 1.0
+  10. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[3-10.0-bounded:replace-adult]
+     AssertionError: Call 2 (EM): Dist 4.0000 > Sens 2.0
+  11. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[5-5.0-bounded:replace-fake]
+     AssertionError: Call 1 (GM): Dist 1.4142 > Sens 1.0
+  12. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[5-5.0-bounded:replace-adult]
+     AssertionError: Call 1 (GM): Dist 1.4142 > Sens 1.0
+  13. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[5-10.0-bounded:replace-fake]
+     AssertionError: Call 2 (EM): Dist 3.4931 > Sens 2.0
+  14. [mbi] examples.mbi_auditing.tests.test_jam_mbi_audit::test_jam_mbi_audit[5-10.0-bounded:replace-adult]
+     AssertionError: Call 1 (GM): Dist 1.4142 > Sens 1.0
+  15. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:uniform_supported(s=1)]
+     AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+  16. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:uniform_domain(s=2)]
+     AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+  17. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_nan(s=3)]
+     AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+  18. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_inf(s=5)]
+     AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+  19. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_large_outliers(s=3)]
+     AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+  20. [synthcity] examples.synthcity_auditing.tests.test_privbayes_audit::test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_shifted_outliers(s=4)]
+     AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
 ```
 
 ## Limitations

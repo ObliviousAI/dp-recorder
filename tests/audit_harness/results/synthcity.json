@@ -1,0 +1,8 @@
+{
+  "manifest": "synthcity.json",
+  "library_id": "synthcity",
+  "exit_code": 1,
+  "elapsed_s": 105.46,
+  "junit_xml": "/workspace/dp-recorder/tests/audit_harness/results/synthcity.xml",
+  "log": "/workspace/dp-recorder/tests/audit_harness/results/synthcity.log"
+}

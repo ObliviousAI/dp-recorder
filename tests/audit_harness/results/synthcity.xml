@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="15" time="102.604" timestamp="2026-05-01T08:30:09.633272+00:00" hostname="f98b45edf368"><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:add:copy_random(s=0)]" time="8.598" /><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:add:uniform_domain(s=1)]" time="9.228" /><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:add:uniform_supported(s=1)]" time="9.625" /><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:remove:randidx(s=2)]" time="9.514" /><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:remove:randidx(s=3)]" time="10.898" /><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:add:insert_nan(s=2)]" time="14.433" /><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:add:insert_inf(s=5)]" time="9.247" /><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:add:insert_large_outliers(s=3)]" time="10.762" /><testcase classname="examples.synthcity_auditing.tests.test_aim_audit" name="test_aim_record_replay_hooks[2-fake-unbounded:add:insert_shifted_outliers(s=4)]" time="11.932" /><testcase classname="examples.synthcity_auditing.tests.test_privbayes_audit" name="test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:uniform_supported(s=1)]" time="0.372"><failure message="AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)&#10;   Record (D) : False&#10;   Replay (D'): True">examples/synthcity_auditing/tests/test_privbayes_audit.py:138: in test_privbayes_record_replay_hooks
+    raise error
+examples/synthcity_auditing/tests/test_privbayes_audit.py:129: in test_privbayes_record_replay_hooks
+    plugin2.fit(dfp)
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/core/plugin.py:254: in fit
+    output = self._fit(X, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:696: in _fit
+    self.model.fit(X.dataframe())
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:133: in fit
+    self.dag = self._greedy_bayes(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:284: in _greedy_bayes
+    is_weak_mi = ensure_equality(is_weak_mi=is_weak_mi)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:640: in ensure_equality
+    return auditor.check_equality(value=value, label=label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:287: in check_equality
+    raise AssertionError(
+E   AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+E      Record (D) : False
+E      Replay (D'): True</failure></testcase><testcase classname="examples.synthcity_auditing.tests.test_privbayes_audit" name="test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:uniform_domain(s=2)]" time="0.357"><failure message="AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)&#10;   Record (D) : False&#10;   Replay (D'): True">examples/synthcity_auditing/tests/test_privbayes_audit.py:138: in test_privbayes_record_replay_hooks
+    raise error
+examples/synthcity_auditing/tests/test_privbayes_audit.py:129: in test_privbayes_record_replay_hooks
+    plugin2.fit(dfp)
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/core/plugin.py:254: in fit
+    output = self._fit(X, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:696: in _fit
+    self.model.fit(X.dataframe())
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:133: in fit
+    self.dag = self._greedy_bayes(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:284: in _greedy_bayes
+    is_weak_mi = ensure_equality(is_weak_mi=is_weak_mi)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:640: in ensure_equality
+    return auditor.check_equality(value=value, label=label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:287: in check_equality
+    raise AssertionError(
+E   AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+E      Record (D) : False
+E      Replay (D'): True</failure></testcase><testcase classname="examples.synthcity_auditing.tests.test_privbayes_audit" name="test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_nan(s=3)]" time="0.585"><failure message="AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)&#10;   Record (D) : False&#10;   Replay (D'): True">examples/synthcity_auditing/tests/test_privbayes_audit.py:138: in test_privbayes_record_replay_hooks
+    raise error
+examples/synthcity_auditing/tests/test_privbayes_audit.py:129: in test_privbayes_record_replay_hooks
+    plugin2.fit(dfp)
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/core/plugin.py:254: in fit
+    output = self._fit(X, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:696: in _fit
+    self.model.fit(X.dataframe())
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:133: in fit
+    self.dag = self._greedy_bayes(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:284: in _greedy_bayes
+    is_weak_mi = ensure_equality(is_weak_mi=is_weak_mi)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:640: in ensure_equality
+    return auditor.check_equality(value=value, label=label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:287: in check_equality
+    raise AssertionError(
+E   AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+E      Record (D) : False
+E      Replay (D'): True</failure></testcase><testcase classname="examples.synthcity_auditing.tests.test_privbayes_audit" name="test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_inf(s=5)]" time="0.347"><failure message="AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)&#10;   Record (D) : False&#10;   Replay (D'): True">examples/synthcity_auditing/tests/test_privbayes_audit.py:138: in test_privbayes_record_replay_hooks
+    raise error
+examples/synthcity_auditing/tests/test_privbayes_audit.py:129: in test_privbayes_record_replay_hooks
+    plugin2.fit(dfp)
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/core/plugin.py:254: in fit
+    output = self._fit(X, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:696: in _fit
+    self.model.fit(X.dataframe())
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:133: in fit
+    self.dag = self._greedy_bayes(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:284: in _greedy_bayes
+    is_weak_mi = ensure_equality(is_weak_mi=is_weak_mi)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:640: in ensure_equality
+    return auditor.check_equality(value=value, label=label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:287: in check_equality
+    raise AssertionError(
+E   AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+E      Record (D) : False
+E      Replay (D'): True</failure></testcase><testcase classname="examples.synthcity_auditing.tests.test_privbayes_audit" name="test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_large_outliers(s=3)]" time="0.562"><failure message="AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)&#10;   Record (D) : False&#10;   Replay (D'): True">examples/synthcity_auditing/tests/test_privbayes_audit.py:138: in test_privbayes_record_replay_hooks
+    raise error
+examples/synthcity_auditing/tests/test_privbayes_audit.py:129: in test_privbayes_record_replay_hooks
+    plugin2.fit(dfp)
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/core/plugin.py:254: in fit
+    output = self._fit(X, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:696: in _fit
+    self.model.fit(X.dataframe())
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:133: in fit
+    self.dag = self._greedy_bayes(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:284: in _greedy_bayes
+    is_weak_mi = ensure_equality(is_weak_mi=is_weak_mi)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:640: in ensure_equality
+    return auditor.check_equality(value=value, label=label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:287: in check_equality
+    raise AssertionError(
+E   AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+E      Record (D) : False
+E      Replay (D'): True</failure></testcase><testcase classname="examples.synthcity_auditing.tests.test_privbayes_audit" name="test_privbayes_record_replay_hooks[1.0-fake-bounded:replace:insert_shifted_outliers(s=4)]" time="0.583"><failure message="AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)&#10;   Record (D) : False&#10;   Replay (D'): True">examples/synthcity_auditing/tests/test_privbayes_audit.py:138: in test_privbayes_record_replay_hooks
+    raise error
+examples/synthcity_auditing/tests/test_privbayes_audit.py:129: in test_privbayes_record_replay_hooks
+    plugin2.fit(dfp)
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/core/plugin.py:254: in fit
+    output = self._fit(X, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:696: in _fit
+    self.model.fit(X.dataframe())
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:133: in fit
+    self.dag = self._greedy_bayes(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:56: in wrapper_function
+    return vd.call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:151: in call
+    return self.execute(m)
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pydantic/deprecated/decorator.py:227: in execute
+    return self.raw_function(**d, **var_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+examples/synthcity_auditing/synthcity/src/synthcity/plugins/privacy/plugin_privbayes.py:284: in _greedy_bayes
+    is_weak_mi = ensure_equality(is_weak_mi=is_weak_mi)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:640: in ensure_equality
+    return auditor.check_equality(value=value, label=label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/workspace/dp-recorder/src/dp_recorder/auditing/audit_primitives.py:287: in check_equality
+    raise AssertionError(
+E   AssertionError: Equality Failure @ 'is_weak_mi' (Call 11)
+E      Record (D) : False
+E      Replay (D'): True</failure></testcase></testsuite></testsuites>
